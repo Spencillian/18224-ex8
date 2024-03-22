@@ -1,0 +1,97 @@
+{
+  "creator": "Yosys 0.36+3 (git sha1 a53032104, aarch64-apple-darwin20.2-clang 10.0.0-4ubuntu1 -fPIC -Os)",
+  "modules": {
+    "shortpath": {
+      "attributes": {
+        "top": "00000000000000000000000000000001",
+        "src": "shortpath.sv:3.1-16.10"
+      },
+      "ports": {
+        "a": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "x": {
+          "direction": "output",
+          "bits": [ 3 ]
+        },
+        "clk": {
+          "direction": "input",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+        "$auto$ff.cc:266:slice$81": {
+          "hide_name": 1,
+          "type": "$_DFF_P_",
+          "parameters": {
+          },
+          "attributes": {
+            "always_ff": "00000000000000000000000000000001",
+            "src": "shortpath.sv:11.5-14.8"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 4 ],
+            "D": [ 5 ],
+            "Q": [ 3 ]
+          }
+        },
+        "$auto$ff.cc:266:slice$82": {
+          "hide_name": 1,
+          "type": "$_DFF_P_",
+          "parameters": {
+          },
+          "attributes": {
+            "always_ff": "00000000000000000000000000000001",
+            "src": "shortpath.sv:11.5-14.8"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 4 ],
+            "D": [ 2 ],
+            "Q": [ 5 ]
+          }
+        }
+      },
+      "netnames": {
+        "a": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "src": "shortpath.sv:4.17-4.18"
+          }
+        },
+        "a_": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+            "src": "shortpath.sv:9.11-9.13"
+          }
+        },
+        "clk": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+            "src": "shortpath.sv:6.17-6.20"
+          }
+        },
+        "x": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "src": "shortpath.sv:5.18-5.19"
+          }
+        }
+      }
+    }
+  }
+}
