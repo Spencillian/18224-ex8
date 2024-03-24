@@ -1,6 +1,7 @@
 import json
 import argparse
 import copy
+from os import PathLike, curdir
 from pprint import pprint
 
 # Avoid modifying these values for your initial implementation
@@ -42,29 +43,38 @@ def main():
     # TODO: you'll probably want to call into your other functions here to test them
 
 
-
 def get_paths(asic):
+    paths = []
     # TODO: you will implement this function
 
-    endpoints: list[int] = asic.inputs
-
-    final_paths: list[list[PathHop]] = []
-    working_paths: list[list[tuple[int, PathHop]]] = []
+    endpoints = []
+    for output in asic.outputs:
+        for cell in asic.cell_list:
+            if output in cell.outputs:
+                endpoints.extend(cell.inputs)
+    working_paths = []
 
     for endpoint in endpoints:
-        path: list[tuple[int, PathHop]] = []
+        path = []
         working_paths.append(path)
 
         while len(working_paths) != 0:
             p = working_paths.pop()
 
-            # potentially need null check
-            if len(p.cell_list) != 0:
-                current_net = p
-            else:
+            if len(p) == 0:
                 current_net = endpoint
+            else:
+                current_net = p[-1].input_net
 
-
+            for cell in asic.cell_list:
+                if current_net in cell.outputs:
+                    if cell.type == '$_DFF_P_':
+                        paths.append(list(reversed(p)))
+                    else:
+                        for inputs in cell.inputs:
+                            temp = p.copy()
+                            temp.append(PathHop(cell, inputs, current_net))
+                            working_paths.append(temp)
 
     # Don't remove this, it verifies path correctness
     check_paths(paths)
@@ -153,11 +163,11 @@ class Cell:
 # DO NOT MODIFY
 class ASIC:
     def __init__(self, file_name) -> None:
-        self.cell_list  = None      # List of all cells in the circuit
-        self.inputs   = None        # List of all inputs wires 
-        self.outputs  = None        # List of all output wires
+        self.cell_list = None      # List of all cells in the circuit
+        self.inputs = None        # List of all inputs wires 
+        self.outputs = None        # List of all output wires
         self.net_dict = None        # Dictionary of all wires in the circuit
-        self.paths    = None        # List of all logic paths. You'll fill this in get_paths()
+        self.paths = None        # List of all logic paths. You'll fill this in get_paths()
 
 
         self.cell_list, self.inputs, self.outputs, self.net_dict =  parse_json(file_name)
