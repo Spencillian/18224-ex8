@@ -40,6 +40,8 @@ def main():
     asic.paths = get_paths(asic)
     asic.display_asic()
 
+    analyze_path(asic.paths, asic)
+
     # TODO: you'll probably want to call into your other functions here to test them
 
 
@@ -80,6 +82,45 @@ def get_paths(asic):
     check_paths(paths)
     print("Number of paths", len(paths))
     return paths
+
+def get_longest_paths(path_list, n):
+    paths = []
+    for path in path_list:
+        total_delay = 0
+        for hop in path:
+            total_delay += hop.cell.delay
+        paths.append((total_delay, path))
+    return [item[1] for item in sorted(paths, key=lambda e: e[0], reverse=True)[:n]], [item[0] for item in sorted(paths, key=lambda e: e[0], reverse=True)[:n]]
+
+def get_shortest_paths(path_list, n):
+    paths = []
+    for path in path_list:
+        total_delay = 0
+        for hop in path:
+            total_delay += hop.cell.delay
+        paths.append((total_delay, path))
+    return [item[1] for item in sorted(paths, key=lambda e: e[0])[:n]], [item[0] for item in sorted(paths, key=lambda e: e[0])[:n]]
+
+def analyze_path(path_list, asic):
+    paths = []
+    t_prop = []
+    for i in range(5, 1, -1):
+        try:
+            paths, t_prop = get_longest_paths(path_list, i)
+            break
+        except:
+            ...
+
+    if len(paths) == 0:
+        print("no paths")
+
+    for i in range(len(paths)):
+        print_path(asic, paths[i])
+        if CLK2Q_MAX + t_prop[i] <= CLOCK_PERIOD - CLK_SKEW_MAX:
+            print("within timing")
+        else:
+            print("fails timing")
+        print("slack:", CLOCK_PERIOD - CLK_SKEW_MAX - t_prop[i] - CLK2Q_MAX)
 
 
 ######## You shouldn't need to modify anything below this line, but you may find it useful for reference
