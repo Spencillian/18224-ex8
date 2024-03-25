@@ -40,7 +40,9 @@ def main():
     asic.paths = get_paths(asic)
     asic.display_asic()
 
-    analyze_path(asic.paths, asic)
+    analyze_setup(asic.paths, asic)
+    analyze_hold(asic.paths, asic)
+
 
     # TODO: you'll probably want to call into your other functions here to test them
 
@@ -101,10 +103,11 @@ def get_shortest_paths(path_list, n):
         paths.append((total_delay, path))
     return [item[1] for item in sorted(paths, key=lambda e: e[0])[:n]], [item[0] for item in sorted(paths, key=lambda e: e[0])[:n]]
 
-def analyze_path(path_list, asic):
+def analyze_setup(path_list, asic):
+    print("\n-------SETUP TIME-------")
     paths = []
     t_prop = []
-    for i in range(5, 1, -1):
+    for i in range(5, 0, -1):
         try:
             paths, t_prop = get_longest_paths(path_list, i)
             break
@@ -121,7 +124,32 @@ def analyze_path(path_list, asic):
         else:
             print("fails timing")
         print("slack:", CLOCK_PERIOD - CLK_SKEW_MAX - t_prop[i] - CLK2Q_MAX)
+        print()
+    print()
 
+def analyze_hold(path_list, asic):
+    print("\n-------HOLD TIME-------")
+    paths = []
+    t_contam = []
+    for i in range(5, 0, -1):
+        try:
+            paths, t_contam = get_shortest_paths(path_list, i)
+            break
+        except:
+            ...
+
+    if len(paths) == 0:
+        print("no paths")
+
+    for i in range(len(paths)):
+        print_path(asic, paths[i])
+        if CLK2Q_MIN + t_contam[i] >= HOLD_TIME:
+            print("within timing")
+        else:
+            print("fails timing")
+        print("slack:", CLK2Q_MIN + t_contam[i] - HOLD_TIME)
+        print()
+    print()
 
 ######## You shouldn't need to modify anything below this line, but you may find it useful for reference
 
